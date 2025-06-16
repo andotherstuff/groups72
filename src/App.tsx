@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NostrLoginProvider } from '@nostrify/react/login';
 import AppRouter from './AppRouter';
+import { NotificationPermissionPrompt } from "@/components/notifications/NotificationPermissionPrompt";
 import { useSystemTheme } from '@/hooks/useSystemTheme';
 import { JoinDialogProvider } from '@/components/groups/JoinDialogProvider';
 import { WalletLoader } from '@/components/WalletLoader';
@@ -40,6 +41,7 @@ export function App() {
               <WalletLoader />
               <Toaster />
               <Sonner />
+              <NotificationPermissionPrompt />
               <AppRouter />
             </JoinDialogProvider>
           </TooltipProvider>

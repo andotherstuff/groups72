@@ -1,0 +1,48 @@
+# Cloudflare Worker configuration - Relay Crawler
+name = "relay-crawler"
+main = "src/relay-crawler-worker.ts"
+compatibility_date = "2023-05-18"
+
+# Worker compatibility settings
+compatibility_flags = ["nodejs_compat"]
+
+# KV Namespace binding - shared with notification system
+# For development, create namespace with: wrangler kv:namespace create "relay_crawler"
+[[kv_namespaces]]
+binding = "KV"
+id = "20ccafa3156347609e7c7ee92ab4faf4"
+preview_id = "f40ff744320f422690dcd97c3055525e"
+
+# Environment variables (non-sensitive)
+[vars]
+RELAY_URLS = "wss://relay.primal.net,wss://relay.damus.io,wss://relay.nostr.band,wss://nos.lol,wss://relay.snort.social"
+
+# Cron trigger - runs every minute
+[triggers]
+crons = ["* * * * *"] # Every minute
+
+# Production environment
+[env.production]
+name = "relay-crawler-prod"
+[env.production.vars]
+RELAY_URLS = "wss://relay.chorus.community/,wss://relay.primal.net,wss://relay.damus.io,wss://nos.lol,wss://relay.snort.social,wss://relay.nostr.band"
+[[env.production.kv_namespaces]]
+binding = "KV"
+id = "2b08d551814e488e87dc30706363e95c"
+
+# Staging environment
+[env.staging]
+name = "relay-crawler-staging"
+[env.staging.vars]
+RELAY_URLS = "wss://relay.primal.net,wss://relay.damus.io"
+[[env.staging.kv_namespaces]]
+binding = "KV"
+id = "a4b796fae79440c2a9f534d340794dfe"
+
+# Resource limits
+# Note: CPU limits require a paid plan
+# [limits]
+# cpu_ms = 50 # 50ms CPU time per request
+
+# Secrets (set via wrangler CLI or dashboard):
+# - WORKER_AUTH_TOKEN (optional, for manual trigger authentication)

@@ -1,0 +1,71 @@
+# Cloudflare Worker configuration - Push Notifications
+name = "chorus-notifications"
+main = "src/push-notification-worker.ts"
+compatibility_date = "2024-02-19"
+compatibility_flags = ["nodejs_compat"]
+
+# KV Namespace binding
+[[kv_namespaces]]
+binding = "KV"
+id = "b95ec0b013ae4c7896f4379fcdd582d8"
+preview_id = "ef0e4752dd3d43b18eba4721b0adbba7"
+
+# Durable Objects for queue management
+[[durable_objects.bindings]]
+name = "PUSH_QUEUE"
+class_name = "PushQueue"
+script_name = "chorus-notifications"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PushQueue"]
+
+# Environment variables (non-sensitive)
+[vars]
+RELAY_URLS = "wss://relay.primal.net,wss://relay.damus.io,wss://relay.nostr.band"
+
+# Cron trigger for scheduled queue processing
+[triggers]
+crons = ["*/5 * * * *"] # Every 5 minutes
+
+# Production environment
+[env.production]
+name = "chorus-notifications-prod"
+vars = { RELAY_URLS = "wss://relay.chorus.community/,wss://relay.primal.net" }
+
+[[env.production.kv_namespaces]]
+binding = "KV"
+id = "b95ec0b013ae4c7896f4379fcdd582d8"
+preview_id = "ef0e4752dd3d43b18eba4721b0adbba7"
+
+[[env.production.durable_objects.bindings]]
+name = "PUSH_QUEUE"
+class_name = "PushQueue"
+script_name = "chorus-notifications-prod"
+
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["PushQueue"]
+
+# Staging environment
+[env.staging]
+name = "chorus-notifications-staging"
+vars = { RELAY_URLS = "wss://relay.primal.net" }
+
+[[env.staging.kv_namespaces]]
+binding = "KV"
+id = "b95ec0b013ae4c7896f4379fcdd582d8"
+preview_id = "ef0e4752dd3d43b18eba4721b0adbba7"
+
+[[env.staging.durable_objects.bindings]]
+name = "PUSH_QUEUE"
+class_name = "PushQueue"
+script_name = "chorus-notifications-staging"
+
+[[env.staging.migrations]]
+tag = "v1"
+new_sqlite_classes = ["PushQueue"]
+
+# Secrets must be set via wrangler CLI or GitHub Actions:
+# - VAPID_PUBLIC_KEY
+# - VAPID_PRIVATE_KEY

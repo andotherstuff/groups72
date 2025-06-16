@@ -18,7 +18,7 @@ const GroupGuidelines = lazy(() => import("./pages/GroupGuidelines"));
 const CreateGroup = lazy(() => import("./pages/CreateGroup"));
 const ProfileSettings = lazy(() => import("./pages/settings/ProfileSettings"));
 const Settings = lazy(() => import("./pages/settings/Settings"));
-const Notifications = lazy(() => import("./pages/settings/Notifications"));
+const Notifications = lazy(() => import("./pages/settings/EnhancedNotifications"));
 const CashuWallet = lazy(() => import("./pages/CashuWallet"));
 const LinkPreviewTest = lazy(() => import("./pages/LinkPreviewTest"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));

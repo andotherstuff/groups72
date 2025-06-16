@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTrackEngagement } from "@/hooks/useTrackEngagement";
 import { useNostrPublish } from "@/hooks/useNostrPublish";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useUploadFile } from "@/hooks/useUploadFile";

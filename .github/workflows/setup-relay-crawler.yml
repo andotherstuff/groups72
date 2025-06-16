@@ -1,0 +1,200 @@
+name: Setup Relay Crawler
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_namespaces:
+        description: 'Create KV namespaces'
+        required: true
+        type: boolean
+        default: true
+      test_connection:
+        description: 'Test Cloudflare connection'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  setup:
+    name: Setup Relay Crawler Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Test Cloudflare Connection
+        if: ${{ inputs.test_connection }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          echo "Testing Cloudflare connection..."
+          
+          # Test API token
+          if wrangler whoami; then
+            echo "✅ Cloudflare connection successful"
+          else
+            echo "❌ Failed to connect to Cloudflare"
+            echo "Please check:"
+            echo "1. CF_API_TOKEN secret is set correctly"
+            echo "2. CF_ACCOUNT_ID secret is set correctly"
+            echo "3. API token has required permissions"
+            exit 1
+          fi
+
+      - name: Create KV Namespaces
+        if: ${{ inputs.create_namespaces }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          echo "Creating KV namespaces..."
+          
+          # Function to create namespace
+          create_namespace() {
+            local name=$1
+            local env=$2
+            
+            echo "Creating namespace: $name"
+            
+            # Check if namespace already exists
+            existing=$(wrangler kv:namespace list | grep -E "\"title\":\s*\"$name\"" || true)
+            
+            if [ -n "$existing" ]; then
+              echo "⚠️  Namespace $name already exists"
+              # Extract ID from existing namespace
+              id=$(echo "$existing" | grep -oE '"id":\s*"[^"]*"' | cut -d'"' -f4 | head -1)
+              echo "${env}_KV_ID=$id"
+              echo "${env}_KV_ID=$id" >> $GITHUB_OUTPUT
+            else
+              # Create new namespace
+              output=$(wrangler kv:namespace create "$name" 2>&1)
+              echo "$output"
+              
+              # Extract ID
+              id=$(echo "$output" | grep -oE 'id = "[^"]*"' | cut -d'"' -f2)
+              
+              if [ -n "$id" ]; then
+                echo "✅ Created namespace $name with ID: $id"
+                echo "${env}_KV_ID=$id"
+                echo "${env}_KV_ID=$id" >> $GITHUB_OUTPUT
+              else
+                echo "❌ Failed to create namespace $name"
+                exit 1
+              fi
+            fi
+            
+            # Create preview namespace
+            preview_existing=$(wrangler kv:namespace list | grep -E "\"title\":\s*\"${name}_preview\"" || true)
+            
+            if [ -n "$preview_existing" ]; then
+              echo "⚠️  Preview namespace ${name}_preview already exists"
+              preview_id=$(echo "$preview_existing" | grep -oE '"id":\s*"[^"]*"' | cut -d'"' -f4 | head -1)
+              echo "${env}_KV_PREVIEW_ID=$preview_id"
+              echo "${env}_KV_PREVIEW_ID=$preview_id" >> $GITHUB_OUTPUT
+            else
+              preview_output=$(wrangler kv:namespace create "${name}" --preview 2>&1)
+              echo "$preview_output"
+              
+              preview_id=$(echo "$preview_output" | grep -oE 'id = "[^"]*"' | cut -d'"' -f2)
+              
+              if [ -n "$preview_id" ]; then
+                echo "✅ Created preview namespace with ID: $preview_id"
+                echo "${env}_KV_PREVIEW_ID=$preview_id"
+                echo "${env}_KV_PREVIEW_ID=$preview_id" >> $GITHUB_OUTPUT
+              fi
+            fi
+            
+            echo "---"
+          }
+          
+          # Create namespaces
+          create_namespace "relay_crawler_production" "PRODUCTION"
+          create_namespace "relay_crawler_staging" "STAGING"
+          create_namespace "relay_crawler_development" "DEVELOPMENT"
+
+      - name: Generate Configuration
+        run: |
+          echo "# Relay Crawler Configuration" > setup-results.md
+          echo "" >> setup-results.md
+          echo "## KV Namespace IDs" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "Update your \`wrangler-crawler.toml\` with these IDs:" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "\`\`\`toml" >> setup-results.md
+          echo "# Development (default)" >> setup-results.md
+          echo "[[kv_namespaces]]" >> setup-results.md
+          echo "binding = \"KV\"" >> setup-results.md
+          echo "id = \"${{ steps.create-namespaces.outputs.DEVELOPMENT_KV_ID || 'YOUR_DEV_KV_ID' }}\"" >> setup-results.md
+          echo "preview_id = \"${{ steps.create-namespaces.outputs.DEVELOPMENT_KV_PREVIEW_ID || 'YOUR_DEV_PREVIEW_ID' }}\"" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "# Production" >> setup-results.md
+          echo "[[env.production.kv_namespaces]]" >> setup-results.md
+          echo "binding = \"KV\"" >> setup-results.md
+          echo "id = \"${{ steps.create-namespaces.outputs.PRODUCTION_KV_ID || 'YOUR_PROD_KV_ID' }}\"" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "# Staging" >> setup-results.md
+          echo "[[env.staging.kv_namespaces]]" >> setup-results.md
+          echo "binding = \"KV\"" >> setup-results.md
+          echo "id = \"${{ steps.create-namespaces.outputs.STAGING_KV_ID || 'YOUR_STAGING_KV_ID' }}\"" >> setup-results.md
+          echo "\`\`\`" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "## Worker URLs" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "Your workers will be deployed to:" >> setup-results.md
+          echo "- Production: https://relay-crawler-prod.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev" >> setup-results.md
+          echo "- Staging: https://relay-crawler-staging.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev" >> setup-results.md
+          echo "- Development: https://relay-crawler.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "## Next Steps" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "1. Update \`wrangler-crawler.toml\` with the KV namespace IDs above" >> setup-results.md
+          echo "2. Commit and push the changes" >> setup-results.md
+          echo "3. The Deploy Relay Crawler workflow will run automatically" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "## Optional: Set Authentication Tokens" >> setup-results.md
+          echo "" >> setup-results.md
+          echo "If you want to require authentication for manual triggers, add these secrets:" >> setup-results.md
+          echo "- \`WORKER_AUTH_TOKEN_PRODUCTION\`" >> setup-results.md
+          echo "- \`WORKER_AUTH_TOKEN_STAGING\`" >> setup-results.md
+          
+          # Display results
+          cat setup-results.md
+
+      - name: Upload Configuration
+        uses: actions/upload-artifact@v3
+        with:
+          name: relay-crawler-config
+          path: setup-results.md
+          retention-days: 7
+
+      - name: Setup Summary
+        run: |
+          echo "## 🎉 Setup Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ inputs.test_connection }}" == "true" ]]; then
+            echo "✅ Cloudflare connection verified" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ inputs.create_namespaces }}" == "true" ]]; then
+            echo "✅ KV namespaces created" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download the configuration artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
+          echo "2. Update \`wrangler-crawler.toml\` with the KV namespace IDs" >> $GITHUB_STEP_SUMMARY
+          echo "3. Commit and push the changes" >> $GITHUB_STEP_SUMMARY
+          echo "4. The relay crawler will deploy automatically" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Manual Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "You can also trigger a deployment manually from the Actions tab" >> $GITHUB_STEP_SUMMARY

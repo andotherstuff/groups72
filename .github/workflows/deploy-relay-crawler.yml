@@ -1,0 +1,228 @@
+name: Deploy Relay Crawler
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'worker/cloudflare-worker/src/relay-crawler-worker.ts'
+      - 'worker/cloudflare-worker/wrangler-crawler.toml'
+      - '.github/workflows/deploy-relay-crawler.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'worker/cloudflare-worker/src/relay-crawler-worker.ts'
+      - 'worker/cloudflare-worker/wrangler-crawler.toml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+jobs:
+  test:
+    name: Test Relay Crawler
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: worker/cloudflare-worker/package-lock.json
+
+      - name: Install dependencies
+        working-directory: worker/cloudflare-worker
+        run: npm ci
+
+      - name: Type check
+        working-directory: worker/cloudflare-worker
+        run: npm run typecheck
+
+      - name: Lint
+        working-directory: worker/cloudflare-worker
+        run: npm run lint || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'pull_request'
+    environment:
+      name: staging
+      url: https://relay-crawler-staging.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: worker/cloudflare-worker/package-lock.json
+
+      - name: Install dependencies
+        working-directory: worker/cloudflare-worker
+        run: npm ci
+
+      - name: Deploy to Cloudflare Workers (Staging)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker/cloudflare-worker
+          command: deploy --env staging -c wrangler-crawler.toml
+          secrets: |
+            WORKER_AUTH_TOKEN
+        env:
+          WORKER_AUTH_TOKEN: ${{ secrets.WORKER_AUTH_TOKEN_STAGING }}
+
+      - name: Test deployment
+        run: |
+          sleep 10
+          response=$(curl -s -w "\n%{http_code}" https://relay-crawler-staging.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev/health)
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status code: $status_code"
+          
+          if [ "$status_code" != "200" ]; then
+            echo "Health check failed"
+            exit 1
+          fi
+          
+          # Check if response is valid JSON
+          echo "$body" | jq .
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    environment:
+      name: production
+      url: https://relay-crawler-prod.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: worker/cloudflare-worker/package-lock.json
+
+      - name: Install dependencies
+        working-directory: worker/cloudflare-worker
+        run: npm ci
+
+      - name: Deploy to Cloudflare Workers (Production)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker/cloudflare-worker
+          command: deploy --env production -c wrangler-crawler.toml
+          secrets: |
+            WORKER_AUTH_TOKEN
+        env:
+          WORKER_AUTH_TOKEN: ${{ secrets.WORKER_AUTH_TOKEN_PRODUCTION }}
+
+      - name: Test deployment
+        run: |
+          sleep 10
+          response=$(curl -s -w "\n%{http_code}" https://relay-crawler-prod.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev/health)
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status code: $status_code"
+          
+          if [ "$status_code" != "200" ]; then
+            echo "Health check failed"
+            exit 1
+          fi
+          
+          # Check if response is valid JSON and service is 'relay-crawler'
+          echo "$body" | jq .
+          service=$(echo "$body" | jq -r .service)
+          if [ "$service" != "relay-crawler" ]; then
+            echo "Unexpected service: $service"
+            exit 1
+          fi
+
+      - name: Send deployment notification
+        if: success()
+        run: |
+          echo "✅ Relay Crawler deployed successfully to production!"
+          # Add Slack/Discord notification here if needed
+
+  deploy-manual:
+    name: Manual Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment }}
+      url: https://relay-crawler-${{ github.event.inputs.environment == 'production' && 'prod' || github.event.inputs.environment }}.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: worker/cloudflare-worker/package-lock.json
+
+      - name: Install dependencies
+        working-directory: worker/cloudflare-worker
+        run: npm ci
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker/cloudflare-worker
+          command: deploy ${{ github.event.inputs.environment != 'development' && format('--env {0}', github.event.inputs.environment) || '' }} -c wrangler-crawler.toml
+          secrets: |
+            WORKER_AUTH_TOKEN
+        env:
+          WORKER_AUTH_TOKEN: ${{ github.event.inputs.environment == 'production' && secrets.WORKER_AUTH_TOKEN_PRODUCTION || secrets.WORKER_AUTH_TOKEN_STAGING }}
+
+      - name: Test deployment
+        run: |
+          sleep 10
+          if [ "${{ github.event.inputs.environment }}" = "production" ]; then
+            url="https://relay-crawler-prod.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev/health"
+          elif [ "${{ github.event.inputs.environment }}" = "staging" ]; then
+            url="https://relay-crawler-staging.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev/health"
+          else
+            url="https://relay-crawler.${{ secrets.CF_ACCOUNT_SUBDOMAIN }}.workers.dev/health"
+          fi
+          
+          echo "Testing: $url"
+          response=$(curl -s -w "\n%{http_code}" "$url")
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status code: $status_code"
+          
+          if [ "$status_code" != "200" ]; then
+            echo "Health check failed"
+            exit 1
+          fi

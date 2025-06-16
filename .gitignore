@@ -23,27 +23,4 @@ dist-ssr
 
 # AI
 .repomix*
-# Backup and temporary files
-*.backup
-*.bak
-*.tmp
-*.temp
-*~
-*.orig
-*.rej
-*_backup*
-*_temp*
-temp.*
-*.old
-
-# Build artifacts
-.cache/
-.wrangler/
-
-# IDE and system files
-.vscode/
-.fleet/
-*.swp
-*.swo
-\#*\#
-.certs/
+.env.local

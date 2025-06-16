@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 # account_id = "your-cloudflare-account-id"  # Set this to your Cloudflare account ID
 
 [vars]
-RELAY_URL = "wss://relay.damus.io"
+RELAY_URL = "wss://relay.chorus.community/"
 # BOT_TOKEN = "your-bot-token"  # Set this as a secret with: wrangler secret put BOT_TOKEN
 
 [[kv_namespaces]]

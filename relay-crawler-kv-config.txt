@@ -1,0 +1,23 @@
+# Relay Crawler KV Configuration
+# Generated: Fri May 23 23:18:27 CEST 2025
+
+## Development (default)
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_DEV_KV_ID"
+preview_id = "YOUR_DEV_PREVIEW_ID"
+
+## Production
+[[env.production.kv_namespaces]]
+binding = "KV"
+id = "YOUR_PROD_KV_ID"
+
+## Staging
+[[env.staging.kv_namespaces]]
+binding = "KV"
+id = "YOUR_STAGING_KV_ID"
+
+# Your worker URLs will be:
+# - Production: https://relay-crawler-prod.YOUR_SUBDOMAIN.workers.dev
+# - Staging: https://relay-crawler-staging.YOUR_SUBDOMAIN.workers.dev
+# - Development: https://relay-crawler.YOUR_SUBDOMAIN.workers.dev

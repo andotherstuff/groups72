@@ -109,7 +109,7 @@ ALLOWED_ORIGINS=http://localhost:5173,https://yourdomain.com
 
 ### Cloudflare Worker (wrangler.toml)
 ```
-RELAY_URL=wss://your.nostr.relay
+RELAY_URL=wss://relay.chorus.community/
 PUSH_DISPATCH_API=https://your-api.com
 BOT_TOKEN=same-as-push-api
 ```

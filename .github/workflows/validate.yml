@@ -1,0 +1,75 @@
+name: Validate Environment
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check-secrets:
+    name: Check Required Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Cloudflare Secrets
+        run: |
+          required_secrets=(
+            "CLOUDFLARE_API_TOKEN"
+            "BOT_TOKEN"
+            "VAPID_PUBLIC_KEY"
+            "VAPID_PRIVATE_KEY"
+          )
+          
+          missing_secrets=()
+          
+          for secret in "${required_secrets[@]}"; do
+            if [ -z "${!secret}" ]; then
+              missing_secrets+=("$secret")
+            fi
+          done
+          
+          if [ ${#missing_secrets[@]} -ne 0 ]; then
+            echo "❌ Missing required secrets:"
+            printf '%s\n' "${missing_secrets[@]}"
+            echo ""
+            echo "Please add these secrets in GitHub Settings → Secrets and variables → Actions"
+            exit 1
+          else
+            echo "✅ All required secrets are configured"
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+
+  validate-config:
+    name: Validate Configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check wrangler.toml
+        run: |
+          cd worker/cloudflare-worker
+          
+          if grep -q "YOUR_KV_NAMESPACE_ID" wrangler.toml; then
+            echo "❌ KV namespace ID not configured in wrangler.toml"
+            echo "Run the 'Setup Cloudflare Infrastructure' workflow first"
+            exit 1
+          else
+            echo "✅ wrangler.toml is configured"
+          fi
+
+      - name: Validate environment files
+        run: |
+          # Check if example env files exist
+          if [ ! -f ".env.example" ]; then
+            echo "⚠️ Missing .env.example"
+          fi
+          
+          if [ ! -f "notification-bot/.env.example" ]; then
+            echo "⚠️ Missing notification-bot/.env.example"
+          fi
+          
+          echo "✅ Environment file check complete"
