@@ -87,7 +87,7 @@ interface PostListProps {
   onPostCountChange?: (count: number) => void; // New prop for tracking post count
 }
 
-export function PostList({ communityId, showOnlyApproved = false, pendingOnly = false, onPostCountChange }: PostListProps) {
+export function PostList({ communityId, showOnlyApproved = true, pendingOnly = false, onPostCountChange }: PostListProps) {
   const { nostr } = useNostr();
   const { user } = useCurrentUser();
   const { bannedUsers } = useBannedUsers(communityId);

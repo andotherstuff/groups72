@@ -58,7 +58,7 @@ export default function GroupDetail() {
   const { mutateAsync: publishEvent } = useNostrPublish();
   const queryClient = useQueryClient();
   const [parsedId, setParsedId] = useState<{ kind: number; pubkey: string; identifier: string } | null>(null);
-  const [showOnlyApproved, setShowOnlyApproved] = useState(false);
+  const [showOnlyApproved, setShowOnlyApproved] = useState(true);
   const [currentPostCount, setCurrentPostCount] = useState(0);
   const [activeTab, setActiveTab] = useState("posts");
   const [imageLoading, setImageLoading] = useState(true);
