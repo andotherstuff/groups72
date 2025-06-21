@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                 transition-all flex items-center`}
             >
               <Icon name="Home" size={16} className="mr-1" />
-              <span className="hidden sm:inline">Groups</span>
+              <span className="hidden sm:inline">グループ</span>
             </Link>
             <Link 
               to="/feed" 
@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                 transition-all flex items-center`}
             >
               <Icon name="Feed" size={16} className="mr-1" />
-              <span className="hidden sm:inline">Feed</span>
+              <span className="hidden sm:inline">フィード</span>
             </Link>
           </div>
         )}

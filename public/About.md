@@ -1,34 +1,34 @@
-# About +chorus
+# +chorusについて
 
-+chorus is a simple, decentralized space for communities to gather, share, and grow — built by the team at [And Other Stuff (AOS)](https://andotherstuff.org/) on the open [Nostr](https://github.com/nostr-protocol/nostr) protocol.
++chorusは、[And Other Stuff (AOS)](https://andotherstuff.org/) のチームがオープンな [Nostr](https://github.com/nostr-protocol/nostr) プロトコル上に構築した、コミュニティが集い、共有し、成長するためのシンプルで分散化された空間です。
 
-Whether you're organizing a movement, documenting your work, or just looking for a safe space to connect, +chorus helps you create and join groups that reflect your values — without compromising your privacy and no big tech server watching you. If you’re an activist, organizer, artist, or builder looking for a safer, simpler way to gather online, +chorus gives you the tools to do that on your terms.
+運動を組織している場合でも、仕事を記録している場合でも、あるいは単につながるための安全な空間を探している場合でも、+chorusはあなたの価値観を反映したグループを作成し、参加するのに役立ちます — プライバシーを侵害することなく、大手テック企業のサーバーに監視されることもありません。もしあなたが活動家、主催者、アーティスト、またはオンラインで集まるためのより安全でシンプルな方法を探しているビルダーなら、+chorusはあなた自身の条件でそれを行うためのツールを提供します。
 
-We give you the keys. You drive the conversation.
+私たちはあなたに鍵を渡します。あなたが会話をขับเคลื่อนします。
 
-## What can you do with +chorus?
+## +chorusで何ができますか？
 
-- Create your own group and set the tone for your community  
-- Post notes and photos — share updates, reflections, or inspiration  
-- Join conversations in public communities that align with your work  
-- Stay anonymous or show up with intention — use a pseudonym, stay private, or bring your existing Nostr identity  
-- Use it on the go — fast, lightweight, and mobile-ready  
-- Crowdfund your cause through community-driven micropayments using eCash via the [Cashu](https://cashu.space/) protocol
-- Support the voices you believe in — pay fellow contributors, reward organizers, fund projects
-- Receive support for your own work, activism, or ideas from a like-minded community
+- 独自のグループを作成し、コミュニティのトーンを設定します
+- ノートや写真を投稿 — 更新情報、考察、またはインスピレーションを共有します
+- あなたの仕事に合致するパブリックコミュニティの会話に参加します
+- 匿名を維持するか、意図を持って参加します — 仮名を使用するか、プライベートを維持するか、既存のNostrアイデンティティを持ち込みます
+- 外出先でも使用可能 — 高速、軽量、モバイル対応
+- [Cashu](https://cashu.space/) プロトコル経由のeCashを使用したコミュニティ主導のマイクロペイメントを通じて、あなたの活動目的のためにクラウドファンディングを行います
+- あなたが信じる声をサポートします — 仲間の貢献者に支払い、主催者に報酬を与え、プロジェクトに資金を提供します
+- 同じ考えを持つコミュニティから、あなた自身の仕事、活動、またはアイデアに対するサポートを受けます
 
-## About And Other Stuff (AOS)
+## And Other Stuff (AOS)について
 
-[And Other Stuff (AOS)](https://andotherstuff.org/) is the team behind +chorus.
+[And Other Stuff (AOS)](https://andotherstuff.org/) は+chorusの背後にいるチームです。
 
-We build open-source tools that help people connect, organize, and collaborate — especially for communities that need more flexible, trustworthy options. Our purpose is to support the development of open-source infrastructure, tooling, products, and related initiatives in the Nostr ecosystem that expand human agency, connection, and productivity.
+私たちは、人々がつながり、組織し、協力するのに役立つオープンソースツールを構築しています — 特に、より柔軟で信頼性の高いオプションを必要とするコミュニティのために。私たちの目的は、人間の主体性、つながり、生産性を拡大するNostrエコシステムにおけるオープンソースのインフラストラクチャ、ツール、製品、および関連イニシアチブの開発をサポートすることです。
 
-By focusing on practical, composable apps and shared infrastructure, we’re helping [Nostr](https://github.com/nostr-protocol/nostr) grow from an experimental protocol into a sustainable, widely adopted ecosystem — through collaboration, contribution, and community support.
+実用的で構成可能なアプリと共有インフラストラクチャに焦点を当てることで、私たちは協力、貢献、コミュニティサポートを通じて、[Nostr](https://github.com/nostr-protocol/nostr) が実験的なプロトコルから持続可能で広く採用されるエコシステムへと成長するのを支援しています。
 
-## Have questions?
+## ご質問はありますか？
 
-Check out our [FAQ](/faq) for answers to common questions.
+一般的な質問への回答については、[FAQ](/faq) をご覧ください。
 
-## Talk to us
+## お問い合わせ
 
-Love +chorus? Have an idea for how to make it better? Come say hello in [our group](https://chorus.community/group/34550%3A932614571afcbad4d17a191ee281e39eebbb41b93fac8fd87829622aeb112f4d%3Aand-other-stuff-mb3c9stb) or visit our [GitHub](https://github.com/andotherstuff). We welcome your feedback, ideas, contributions, and [bug reports](https://github.com/andotherstuff/chorus/issues/new).
++chorusを気に入っていただけましたか？より良くするためのアイデアはありますか？[私たちのグループ](https://chorus.community/group/34550%3A932614571afcbad4d17a191ee281e39eebbb41b93fac8fd87829622aeb112f4d%3Aand-other-stuff-mb3c9stb) で挨拶に来るか、[GitHub](https://github.com/andotherstuff) にアクセスしてください。フィードバック、アイデア、貢献、[バグレポート](https://github.com/andotherstuff/chorus/issues/new) を歓迎します。

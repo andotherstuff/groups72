@@ -34,7 +34,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
     setIsLoading(true);
     try {
       if (!('nostr' in window)) {
-        throw new Error('Nostr extension not found. Please install a NIP-07 extension.');
+        throw new Error('Nostr拡張機能が見つかりません。NIP-07拡張機能をインストールしてください。');
       }
       const loginInfo = await login.extension();
       
@@ -104,16 +104,16 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='sm:max-w-md p-0 overflow-hidden rounded-2xl'>
         <DialogHeader className='px-6 pt-6 pb-0 relative'>
-          <DialogTitle className='text-xl font-semibold text-center'>Log in</DialogTitle>
+          <DialogTitle className='text-xl font-semibold text-center'>ログイン</DialogTitle>
           <DialogDescription className='text-center text-muted-foreground mt-2'>
-            Access your account securely with your preferred method
+            ご希望の方法でアカウントに安全にアクセスしてください
           </DialogDescription>
         </DialogHeader>
 
         <div className='px-6 py-8 space-y-6'>
           <Tabs defaultValue={'nostr' in window ? 'extension' : 'key'} className='w-full'>
             <TabsList className='grid grid-cols-3 mb-6'>
-              <TabsTrigger value='extension'>Extension</TabsTrigger>
+              <TabsTrigger value='extension'>拡張機能</TabsTrigger>
               <TabsTrigger value='key'>Nsec</TabsTrigger>
               <TabsTrigger value='bunker'>Bunker</TabsTrigger>
             </TabsList>
@@ -122,14 +122,14 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
               <div className='text-center p-4 rounded-lg bg-muted'>
                 <Shield className='w-12 h-12 mx-auto mb-3 text-primary' />
                 <div className='text-sm text-muted-foreground mb-4'>
-                  Login with one click using the browser extension
+                  ブラウザ拡張機能を使用してワンクリックでログインします
                 </div>
                 <Button
                   className='w-full rounded-full py-6'
                   onClick={handleExtensionLogin}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Logging in...' : 'Login with Extension'}
+                  {isLoading ? 'ログイン中...' : '拡張機能でログイン'}
                 </Button>
               </div>
             </TabsContent>
@@ -138,7 +138,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
               <div className='space-y-4'>
                 <div className='space-y-2'>
                   <label htmlFor='nsec' className='text-sm font-medium text-foreground'>
-                    Enter your nsec
+                    nsecを入力してください
                   </label>
                   <Input
                     id='nsec'
@@ -150,7 +150,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
                 </div>
 
                 <div className='text-center'>
-                  <div className='text-sm mb-2 text-muted-foreground'>Or upload a key file</div>
+                  <div className='text-sm mb-2 text-muted-foreground'>またはキーファイルをアップロード</div>
                   <input
                     type='file'
                     accept='.txt'
@@ -164,7 +164,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <Upload className='w-4 h-4 mr-2' />
-                    Upload Nsec File
+                    Nsecファイルをアップロード
                   </Button>
                 </div>
 
@@ -173,7 +173,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
                   onClick={handleKeyLogin}
                   disabled={isLoading || !nsec.trim()}
                 >
-                  {isLoading ? 'Verifying...' : 'Login with Nsec'}
+                  {isLoading ? '検証中...' : 'Nsecでログイン'}
                 </Button>
               </div>
             </TabsContent>
@@ -191,7 +191,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
                   placeholder='bunker://'
                 />
                 {bunkerUri && !bunkerUri.startsWith('bunker://') && (
-                  <div className='text-destructive text-xs'>URI must start with bunker://</div>
+                  <div className='text-destructive text-xs'>URIはbunker://で始まる必要があります</div>
                 )}
               </div>
 
@@ -200,7 +200,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin }) =
                 onClick={handleBunkerLogin}
                 disabled={isLoading || !bunkerUri.trim() || !bunkerUri.startsWith('bunker://')}
               >
-                {isLoading ? 'Connecting...' : 'Login with Bunker'}
+                {isLoading ? '接続中...' : 'Bunkerでログイン'}
               </Button>
             </TabsContent>
           </Tabs>

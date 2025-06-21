@@ -86,8 +86,8 @@ const Index = () => {
 
           // Show notification with animated icon
           toast({
-            title: "✅ Ecash waiting for you!",
-            description: `Complete signup to receive ${displayAmount} in your wallet`,
+            title: "✅ eキャッシュがあなたを待っています！",
+            description: `サインアップを完了して、ウォレットで${displayAmount}を受け取ります`,
           });
 
           // Mark as processed
@@ -164,8 +164,8 @@ const Index = () => {
       setNewUser(true); // Mark as new user
     } catch (e) {
       toast({
-        title: "Error",
-        description: "Failed to create account. Please try again.",
+        title: "エラー",
+        description: "アカウントの作成に失敗しました。もう一度お試しください。",
         variant: "destructive",
       });
     } finally {
@@ -187,7 +187,7 @@ const Index = () => {
             <h1 className="text-4xl font-extralight mb-4">
               <div className="flex flex-row items-baseline justify-center flex-wrap">
                 <span className="font-extralight mr-2 whitespace-nowrap">
-                  welcome to
+                  へようこそ
                 </span>
                 <div className="flex flex-row items-baseline">
                   <span className="text-red-500 font-extrabold">+</span>
@@ -198,7 +198,7 @@ const Index = () => {
               </div>
             </h1>
             <div className="text-lg text-muted-foreground font-extralight">
-              public/private groups are money
+              公開/非公開グループが収益を生みます
             </div>
           </div>
           <Button
@@ -207,17 +207,17 @@ const Index = () => {
             disabled={creating}
             className="w-full max-w-[200px] flex items-center justify-center gap-2 mb-6"
           >
-            {creating ? "Creating..." : "Get Started"}
+            {creating ? "作成中..." : "始める"}
           </Button>
           <div className="text-sm text-muted-foreground flex items-center justify-center mt-3">
-            <span>Have a Nostr/+chorus account?</span>&nbsp;
+            <span>Nostr/+chorusアカウントをお持ちですか？</span>&nbsp;
             <Button
               variant="link"
               size="sm"
               className="text-primary font-medium hover:underline p-0 h-auto"
               onClick={() => setLoginOpen(true)}
             >
-              Sign in
+              サインイン
             </Button>
           </div>
 
@@ -227,11 +227,11 @@ const Index = () => {
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Smartphone className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  Get the App
+                  アプリを入手
                 </span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
-                Install +chorus for the best experience
+                +chorusをインストールして最高の体験を
               </p>
               <PWAInstallButton
                 variant="outline"
@@ -272,10 +272,10 @@ const Index = () => {
         <div className="min-h-screen flex flex-col items-center justify-center bg-background dark:bg-dark-background">
           <div className="w-full max-w-lg mx-auto p-8">
             <h2 className="text-2xl font-bold mb-4 text-center">
-              Set your name and pic
+              名前と画像を設定
             </h2>
             <p className="text-gray-600 mb-6 text-center">
-              You can always update them later.
+              後でいつでも更新できます。
             </p>
             <EditProfileForm showSkipLink={true} initialName={generatedName} />
           </div>
@@ -287,7 +287,7 @@ const Index = () => {
   // Fallback (should redirect to /groups in most cases)
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground">
-      <div>Loading groups...</div>
+      <div>グループを読み込み中...</div>
     </div>
   );
 };

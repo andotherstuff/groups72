@@ -305,7 +305,7 @@ export default function Groups() {
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 <TrendingUp className="w-3.5 h-3.5" />
-                Trending Hashtags
+                トレンドハッシュタグ
               </a>
             </div>
           </div>
@@ -315,7 +315,7 @@ export default function Groups() {
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               <TrendingUp className="w-3.5 h-3.5" />
-              Trending Hashtags
+              トレンドハッシュタグ
             </a>
           </div>
         </div>
@@ -366,21 +366,21 @@ export default function Groups() {
           ) : searchQuery ? (
             <div className="col-span-full text-center py-10">
               <h2 className="text-xl font-semibold mb-2">
-                No matching groups found
+                一致するグループが見つかりません
               </h2>
               <p className="text-muted-foreground">
-                Try a different search term or browse all groups
+                別の検索語を試すか、すべてのグループを閲覧してください
               </p>
             </div>
           ) : (
             <div className="col-span-full text-center py-10">
-              <h2 className="text-xl font-semibold mb-2">No groups found</h2>
+              <h2 className="text-xl font-semibold mb-2">グループが見つかりません</h2>
               <p className="text-muted-foreground mb-4">
-                Be the first to create a group on this platform!
+                このプラットフォームで最初にグループを作成しましょう！
               </p>
               {!user && (
                 <p className="text-sm text-muted-foreground">
-                  Please log in to create a group
+                  グループを作成するにはログインしてください
                 </p>
               )}
             </div>

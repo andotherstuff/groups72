@@ -1,8 +1,8 @@
 {
   "id": "chorus-nostr-groups",
-  "name": "+chorus - Nostr Groups",
+  "name": "+chorus - Nostr グループ",
   "short_name": "+chorus",
-  "description": "Join, create, and participate in decentralized groups powered by the Nostr protocol. Connect with communities through censorship-resistant social networking.",
+  "description": "Nostrプロトコルを利用した分散型グループに参加、作成、参加しましょう。検閲に強いソーシャルネットワーキングを通じてコミュニティとつながりましょう。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -30,21 +30,21 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "+chorus desktop view showing group discussions"
+      "label": "+chorus デスクトップビュー グループディスカッション表示"
     },
     {
       "src": "/screenshots/mobile.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "+chorus mobile view for group chat"
+      "label": "+chorus モバイルビュー グループチャット用"
     }
   ],
   "shortcuts": [
     {
-      "name": "New Group",
-      "short_name": "New Group",
-      "description": "Create a new decentralized group",
+      "name": "新しいグループ",
+      "short_name": "新しいグループ",
+      "description": "新しい分散型グループを作成する",
       "url": "/groups/new",
       "icons": [
         {
@@ -54,9 +54,9 @@
       ]
     },
     {
-      "name": "Notifications",
-      "short_name": "Notifications",
-      "description": "View your notifications",
+      "name": "お知らせ",
+      "short_name": "お知らせ",
+      "description": "お知らせを見る",
       "url": "/notifications",
       "icons": [
         {

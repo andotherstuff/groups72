@@ -129,7 +129,7 @@ export function CreatePostForm({ communityId, onPostSuccess }: CreatePostFormPro
 
     } catch (error) {
       console.error('Error accessing microphone:', error);
-      toast.error('Could not access microphone. Please check permissions.');
+      toast.error('マイクにアクセスできませんでした。権限を確認してください。');
     }
   };
 
@@ -181,14 +181,14 @@ export function CreatePostForm({ communityId, onPostSuccess }: CreatePostFormPro
 
   const handleSubmit = async () => {
     if (!content.trim() && !mediaFile) {
-      toast.error("Please enter some content or add media");
+      toast.error("コンテンツを入力するか、メディアを追加してください");
       return;
     }
 
     try {
       const parsedId = parseNostrAddress(communityId);
       if (!parsedId) {
-        toast.error("Invalid group ID");
+        toast.error("無効なグループID");
         return;
       }
 
@@ -233,7 +233,7 @@ ${mediaUrl}`;
       setMediaFile(null);
       setPreviewUrl(null);
 
-      toast.success("Post published successfully!");
+      toast.success("投稿が正常に公開されました！");
       
       // Call the onPostSuccess callback if provided
       if (onPostSuccess) {
@@ -241,7 +241,7 @@ ${mediaUrl}`;
       }
     } catch (error) {
       console.error("Error publishing post:", error);
-      toast.error("Failed to publish post. Please try again.");
+      toast.error("投稿の公開に失敗しました。もう一度お試しください。");
     }
   };
 
@@ -258,7 +258,7 @@ ${mediaUrl}`;
 
           <div className="flex-1">
             <Textarea
-              placeholder={`What's on your mind, ${displayName.split(' ')[0]}?`}
+              placeholder={`何を考えていますか、${displayName.split(' ')[0]}さん？`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-20 resize-none p-2"
@@ -280,9 +280,9 @@ ${mediaUrl}`;
                           <Mic className="h-5 w-5 text-green-600" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm font-medium">Voice Recording</div>
+                          <div className="text-sm font-medium">音声録音</div>
                           <div className="text-xs text-muted-foreground">
-                            Ready to send • {(mediaFile.size / 1024).toFixed(0)} KB
+                            送信準備完了 • {(mediaFile.size / 1024).toFixed(0)} KB
                           </div>
                         </div>
                       </>
@@ -291,7 +291,7 @@ ${mediaUrl}`;
                         <div className="flex-1">
                           <div className="text-sm font-medium">{mediaFile.name}</div>
                           <div className="text-xs text-muted-foreground">
-                            Audio file • {(mediaFile.size / 1024).toFixed(0)} KB
+                            音声ファイル • {(mediaFile.size / 1024).toFixed(0)} KB
                           </div>
                         </div>
                         <audio
@@ -339,7 +339,7 @@ ${mediaUrl}`;
           <Button variant="ghost" size="sm" className="text-muted-foreground h-8 px-2 text-xs" asChild>
             <label htmlFor="media-upload" className="cursor-pointer flex items-center">
               <Image className="h-3.5 w-3.5 mr-1" />
-              Media
+              メディア
               <input
                 id="media-upload"
                 type="file"
@@ -366,7 +366,7 @@ ${mediaUrl}`;
             ) : (
               <>
                 <Mic className="h-3.5 w-3.5 mr-1" />
-                Record
+                録音
               </>
             )}
           </Button>
@@ -381,12 +381,12 @@ ${mediaUrl}`;
           {isPublishing || isUploading ? (
             <>
               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-              Posting...
+              投稿中...
             </>
           ) : (
             <>
               <Send className="h-3.5 w-3.5 mr-1.5" />
-              Post
+              投稿
             </>
           )}
         </Button>
